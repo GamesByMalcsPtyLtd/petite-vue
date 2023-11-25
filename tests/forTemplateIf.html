@@ -1,0 +1,37 @@
+<script type="module">
+  import { createApp } from '../src'
+
+  let id = 4
+  createApp({
+    ifID: 1,
+    list: [
+      { id: 1, text: 'bar' },
+      { id: 2, text: 'boo' },
+      { id: 3, text: 'baz' },
+      { id: 4, text: 'bazz' }
+    ],
+    add() {
+      this.list.push({ id: ++id, text: 'new item' })
+    },
+    splice() {
+      this.list.splice(1, 0, { id: ++id, text: 'new item' })
+    },
+    showID(id) {
+      this.ifID = id;
+    }
+  }).mount('#app')
+</script>
+
+<div id="app">
+  <button @click="add">add</button>
+  <button @click="list.reverse()">reverse</button>
+  <button @click="list.pop()">pop</button>
+  <ul>
+    <li v-for="({ id, text }, index) in list" :key="id">
+      <button @click="showID(id)">Show {{ id }}</button>
+    </li>
+  </ul>
+  <template v-for="({ id, text }, index) in list" :key="id">
+    <div v-if="ifID === id">{{ index }} {{ { id, text } }}</div>
+  </template>
+</div>

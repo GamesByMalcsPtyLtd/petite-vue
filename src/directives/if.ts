@@ -12,11 +12,11 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
   if (import.meta.env.DEV && !exp.trim()) {
     console.warn(`v-if expression cannot be empty.`)
   }
-
-  const parent = el.parentElement!
-  const anchor = new Comment('v-if')
+  const parent = el.parentNode!
+  const anchor = new Text('')
+  const comment = new Comment('v-if')
   parent.insertBefore(anchor, el)
-
+  parent.insertBefore(comment, anchor)
   const branches: Branch[] = [
     {
       exp,
@@ -48,7 +48,7 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
 
   const removeActiveBlock = () => {
     if (block) {
-      parent.insertBefore(anchor, block.el)
+      anchor.parentNode!.insertBefore(comment, block.el)
       block.remove()
       block = undefined
     }
@@ -59,10 +59,12 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
       const { exp, el } = branches[i]
       if (!exp || evaluate(ctx.scope, exp)) {
         if (i !== activeBranchIndex) {
+          console.log('Remove Active Block');
           removeActiveBlock()
           block = new Block(el, ctx)
+          const parent = anchor.parentNode!;
           block.insert(parent, anchor)
-          parent.removeChild(anchor)
+          parent.removeChild(comment)
           activeBranchIndex = i
         }
         return
