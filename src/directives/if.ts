@@ -59,7 +59,6 @@ export const _if = (el: Element, exp: string, ctx: Context) => {
       const { exp, el } = branches[i]
       if (!exp || evaluate(ctx.scope, exp)) {
         if (i !== activeBranchIndex) {
-          console.log('Remove Active Block');
           removeActiveBlock()
           block = new Block(el, ctx)
           const parent = anchor.parentNode!;
